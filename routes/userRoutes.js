@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const authenticateKey = require('../middlewares/auth');
+const authenticateKey = require('../middlewares/authApi');
 const { getAll, register, login, getUserById } = require('../controllers/userController');
 
 router.get("/getall", authenticateKey, getAll);
