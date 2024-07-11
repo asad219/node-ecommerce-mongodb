@@ -3,6 +3,7 @@ const asyncHandler = require("express-async-handler");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
+
 //Get All Users for Admin
 const getAll = asyncHandler(async (req, res) => {
   res.status(200).json({ message: "Get All User End Point" });

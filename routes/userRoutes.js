@@ -1,11 +1,11 @@
 const express = require('express');
 const router = express.Router();
-
+const authenticateKey = require('../middlewares/auth');
 const { getAll, register, login, getUserById } = require('../controllers/userController');
 
-router.get("/getall", getAll);
+router.get("/getall", authenticateKey, getAll);
 router.get("/:id", getUserById);
 router.post("/register", register);
-router.post("/login", login);
+router.post("/login", authenticateKey, login);
 
 module.exports = router;
