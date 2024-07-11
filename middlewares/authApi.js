@@ -10,6 +10,7 @@ const authenticateKey = asyncHandler(async (req, res, next) => {
   }
   const decryptKey = decrypt(apiKey, process.env.SECRET_KEY);
   if (decryptKey != "invalid") {
+    
     const dev = await developer.findOne({ apiKey: apiKey });
     if (!dev) {
       return res.status(401).send("Unauthorized: Invalid API key");
