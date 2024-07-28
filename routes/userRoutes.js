@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const authenticateKey = require('../middlewares/authApi');
 const { getAll, register, login, getUserById } = require('../controllers/userController');
-//user routes
+//user routes// again added
 router.get("/getall", authenticateKey, getAll);
 router.get("/:id", getUserById);
 router.post("/register", register);
