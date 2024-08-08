@@ -5,10 +5,12 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const colors = require('colors');
 const morgan = require('morgan');
+
 //Routes references
 const user = require('./routes/userRoutes');
 const developer = require('./routes/developerRoutes');
 
+//Initializing Express Server
 const app = express();
 //middleware
 app.use(cors());
