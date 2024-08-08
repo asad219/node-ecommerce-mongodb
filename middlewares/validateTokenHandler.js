@@ -16,7 +16,10 @@ const validateToken = asyncHandler(async(req, res, next)=>{
                 throw new Error("Provided invalid token or token is expired");
             }
             req.user = decode.user;
+            console.log(req.user);
             next();
         });
     }
 })
+
+module.exports = validateToken;

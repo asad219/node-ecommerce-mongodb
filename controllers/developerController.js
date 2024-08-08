@@ -36,6 +36,7 @@ const generateApiKey = asyncHandler(async (req, res) => {
 function encrypt(text, secretKey) {
   const cipherText = cryptoJS.AES.encrypt(text, secretKey).toString();
   return cipherText;
+  
 }
 
 module.exports = { generateApiKey };

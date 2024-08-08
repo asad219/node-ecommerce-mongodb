@@ -12,6 +12,7 @@
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.2",
+    "colors": "^1.4.0",
     "cors": "^2.8.5",
     "crypto-js": "^4.2.0",
     "date-and-time": "^3.4.0",
@@ -20,6 +21,7 @@
     "express-async-handler": "^1.2.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.5.0",
+    "morgan": "^1.10.0",
     "nodemon": "^3.1.4",
     "uuid": "^10.0.0"
   }

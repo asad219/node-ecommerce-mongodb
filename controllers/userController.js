@@ -3,10 +3,15 @@ const asyncHandler = require("express-async-handler");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
-
 //Get All Users for Admin
 const getAll = asyncHandler(async (req, res) => {
-  res.status(200).json({ message: "Get All User End Point" });
+  const { email, isAdmin } = req.user;
+  console.log(isAdmin);
+  if (isAdmin) {
+    res.status(200).json({ message: "Get All User End Point" });
+  } else {
+    res.status(500).json({ message: "You don't have permission" });
+  }
 });
 
 //Register a new User
@@ -63,7 +68,9 @@ const login = asyncHandler(async (req, res) => {
       process.env.ACCESS_TOKEN_SECRET,
       { expiresIn: "1d" }
     );
-    return res.status(200).json({ user: user.email, id: user.id, token: token });
+    return res
+      .status(200)
+      .json({ user: user.email, id: user.id, token: token });
   } else {
     res.status(401).json({ message: "Invalid credentials" });
   }
@@ -71,16 +78,24 @@ const login = asyncHandler(async (req, res) => {
 
 //Register a new User
 const getUserById = asyncHandler(async (req, res) => {
-    const  id  = req.params.id;
-    console.log(id);
-    try {
-        const user = await User.findById(id);
-        const { passwordHash, __v, ...others } = user._doc;
-        res.status(200).json(others);
-    } catch (err) {
-        res.status(500).json(err);
-    }
+  const id = req.params.id;
+  console.log(id);
+  const {isAdmin, email, userId } = req.user;
 
+  if (!isAdmin){
+    if (userId != id){
+      res.status(500).json({message: "Invalid id"});
+    }
+  }
+
+  
+  try {
+    const user = await User.findById(id);
+    const { passwordHash, __v, ...others } = user._doc;
+    res.status(200).json(others);
+  } catch (err) {
+    res.status(500).json(err);
+  }
 });
 
 module.exports = { getAll, register, login, getUserById };
