@@ -1,11 +1,11 @@
-const Developer = require("../models/developerModel");
-const express = require("express");
-const asyncHandler = require("express-async-handler");
-const bcrypt = require("bcryptjs");
-const crypto = require("crypto");
-const cryptoJS = require("crypto-js");
+import { Developer } from  "../models/developerModel.js";
+import express from "express";
+import asyncHandler  from "express-async-handler";
+import bcrypt from "bcryptjs";
+import crypto from "crypto";
+import cryptoJS from "crypto-js";
 
-const generateApiKey = asyncHandler(async (req, res) => {
+export const generateApiKey = asyncHandler(async (req, res) => {
   const { name, email, password, usage, rateLimit } = req.body;
   //Check duplicate user
   const _dev = await Developer.findOne({ email: email });
@@ -38,5 +38,3 @@ function encrypt(text, secretKey) {
   return cipherText;
   
 }
-
-module.exports = { generateApiKey };

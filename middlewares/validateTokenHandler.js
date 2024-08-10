@@ -1,8 +1,8 @@
-const express = require('express');
-const asyncHandler = require('express-async-handler');
-const jwt = require('jsonwebtoken');
+import express from 'express';
+import asyncHandler from 'express-async-handler';
+import jwt from 'jsonwebtoken';
 
-const validateToken = asyncHandler(async(req, res, next)=>{
+export const validateToken = asyncHandler(async(req, res, next)=>{
     let token;
     let authheader = req.headers.authorization || req.headers.Authorization;
     if(!authheader){
@@ -22,4 +22,3 @@ const validateToken = asyncHandler(async(req, res, next)=>{
     }
 })
 
-module.exports = validateToken;

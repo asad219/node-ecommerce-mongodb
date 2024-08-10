@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose  from "mongoose";
 
 const developerSchema = new mongoose.Schema(
   {
@@ -29,4 +29,5 @@ developerSchema.set("toJSON", {
   virtuals: true,
 });
 
-module.exports = mongoose.model("Developer", developerSchema);
+//module.exports = mongoose.model("Developer", developerSchema);
+export const Developer = mongoose.model("Developer", developerSchema);

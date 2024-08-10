@@ -1,13 +1,13 @@
-const express = require('express');
+
+import express from 'express';
 const router = express.Router();
-const authenticateKey = require('../middlewares/authApi');
-const validateToken = require('../middlewares/validateTokenHandler');
-const { getAll, register, login, getUserById } = require('../controllers/userController');
+import {validateToken} from '../middlewares/validateTokenHandler.js';
+import { getAll, registerController, login, getUserById } from '../controllers/userController.js';
 
 router.get("/getall", validateToken, getAll);
 router.get("/:id", validateToken,getUserById);
-router.post("/register", register);
+router.post("/register", registerController);
 router.post("/login", login);
 
-module.exports = router;
+export default router;
 

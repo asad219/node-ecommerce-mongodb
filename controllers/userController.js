@@ -1,10 +1,10 @@
-const User = require("../models/userModel");
-const asyncHandler = require("express-async-handler");
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
+import { User } from "../models/userModel.js";
+import asyncHandler from "express-async-handler";
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 
 //Get All Users for Admin
-const getAll = asyncHandler(async (req, res) => {
+export const getAll = asyncHandler(async (req, res) => {
   const { email, isAdmin } = req.user;
   console.log(isAdmin);
   if (isAdmin) {
@@ -15,38 +15,64 @@ const getAll = asyncHandler(async (req, res) => {
 });
 
 //Register a new User
-const register = asyncHandler(async (req, res) => {
-  const { name, email, password, phone, isAdmin } = req.body;
-  const _user = await User.findOne({ email: email });
-  if (!name) return res.status(400).json({ error: "Name is required" });
+export const registerController = asyncHandler(async (req, res) => {
+  try {
+    const { name, email, _password, address, city, country, phone, answer } =
+      req.body;
 
-  if (!email) return res.status(400).json({ error: "Email is required" });
+    //Validation
+    const _user = await User.findOne({ email: email });
+    if (!name) return res.status(400).json({ error: "Name is required" });
 
-  if (!password) return res.status(400).json({ error: "Password is required" });
+    if (!email) return res.status(400).json({ error: "Email is required" });
 
-  if (!phone) return res.status(400).json({ error: "Phone is required" });
-  if (_user)
-    return res.status(500).json({ message: "Email address is already exist" });
-  const hashedPassword = bcrypt.hashSync(password, 10);
-  const user = await User.create({
-    name: name,
-    email: email,
-    passwordHash: hashedPassword,
-    phone: phone,
-    isAdmin: isAdmin,
-  });
-  if (!user)
-    return res.status(500).json({
-      message: "Oops! something wrong please contact to system administrator",
+    if (!_password)
+      return res.status(400).json({ error: "Password is required" });
+
+    if (!address) return res.status(400).json({ error: "Address is required" });
+
+    if (!city) return res.status(400).json({ error: "City is required" });
+
+    if (!country) return res.status(400).json({ error: "Country is required" });
+
+    if (!phone) return res.status(400).json({ error: "Phone is required" });
+
+    if (!answer) return res.status(400).json({ error: "Answer is required" });
+
+    if (_user)
+      return res
+        .status(500)
+        .json({ success: false, message: "Email address is already exist" });
+    //const hashedPassword = bcrypt.hashSync(_password, 10);
+    console.log(hashedPassword);
+    const user = await User.create({
+      name: name,
+      email:email,
+      password: _password,
+      address: address,
+      city: city,
+      country: country,
+      phone: phone,
+      answer: answer,
     });
-  const { passwordHash, street, __v, createdAt, updatedAt, ...userData } =
-    user._doc;
+    if (!user)
+      return res.status(500).json({
+        message: "Oops! something wrong please contact to system administrator",
+      });
+    const { __v, password, createdAt, updatedAt, ...userData } = user._doc;
 
-  return res.status(201).json({ message: "User created", userData });
+    return res.status(201).json({ message: "Registration Success", userData });
+  } catch (error) {
+    res.status(500).send({
+      succes: false,
+      message: "Error in Register API",
+      error: error,
+    });
+  }
 });
 
 //Login a new User
-const login = asyncHandler(async (req, res) => {
+export const login = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
@@ -55,7 +81,7 @@ const login = asyncHandler(async (req, res) => {
   }
 
   const user = await User.findOne({ email: email });
-  if (user && (await bcrypt.compareSync(password, user.passwordHash))) {
+  if (user && await bcrypt.compareSync(password, user.password)) {
     const token = jwt.sign(
       {
         user: {
@@ -77,18 +103,17 @@ const login = asyncHandler(async (req, res) => {
 });
 
 //Register a new User
-const getUserById = asyncHandler(async (req, res) => {
+export const getUserById = asyncHandler(async (req, res) => {
   const id = req.params.id;
   console.log(id);
-  const {isAdmin, email, userId } = req.user;
+  const { isAdmin, email, userId } = req.user;
 
-  if (!isAdmin){
-    if (userId != id){
-      res.status(500).json({message: "Invalid id"});
+  if (!isAdmin) {
+    if (userId != id) {
+      res.status(500).json({ message: "Invalid id" });
     }
   }
 
-  
   try {
     const user = await User.findById(id);
     const { passwordHash, __v, ...others } = user._doc;
@@ -97,5 +122,3 @@ const getUserById = asyncHandler(async (req, res) => {
     res.status(500).json(err);
   }
 });
-
-module.exports = { getAll, register, login, getUserById };

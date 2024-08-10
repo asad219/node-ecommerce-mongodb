@@ -1,8 +1,8 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
 
-const { generateApiKey } = require('../controllers/developerController');
+import {generateApiKey}  from '../controllers/developerController.js';
 
 router.post("/generate", generateApiKey);
 
-module.exports = router;
+export default router;
