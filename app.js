@@ -11,6 +11,7 @@ import dotenv from 'dotenv';
 import bodyParser from  'body-parser';
 import cors from 'cors';
 import morgan from 'morgan';
+import cookieParser from 'cookie-parser';
 
 
 //dotenv config
@@ -25,6 +26,7 @@ import {dbConnect} from './config/dbConnection.js';
 const app = express();
 //middleware
 app.use(cors());
+app.use(cookieParser());
 app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
 app.use(morgan('dev'));
 dbConnect();
@@ -33,7 +35,7 @@ dbConnect();
 const port = process.env.port || 5000;
 app.use(express.json());
 app.listen(port,()=>{
-    console.log(`Server is running on ${port}`);
+    console.log(`Server is running on ${port} on ${process.env.NODE_ENV} mode`);
     console.log(" Up and running ")
 });
 

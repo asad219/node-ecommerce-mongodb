@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
-import bcrypt from 'bcryptjs';
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 const userSchema = new mongoose.Schema(
   {
     name: {
@@ -48,12 +49,38 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: "user",
     },
+    token:{
+      type:String,
+      default: null
+    }
   },
   { timestamps: true }
 );
-userSchema.pre('save',async function(){
+
+//hash password function
+userSchema.pre("save", async function () {
   this.password = await bcrypt.hash(this.password, 10);
 });
+
+//compare password function while login // I am not using currently I am using my own logic
+userSchema.method.comparePassword = async function (plainPassword) {
+  return await bcrypt.compare(plainPassword, this.password);
+};
+
+//jwt token function in model class // I am not using this function
+userSchema.methods.generateToken = async function () {
+  return await jwt.sign(
+    {
+      _id: this._id,
+      email: this.email,
+      userId: this.id,
+      role: this.role,
+      name: this.name,
+    },
+    process.env.SECRET_KEY,
+    { expiresIn: "7d" }
+  );
+};
 
 userSchema.virtual("id").get(function () {
   return this._id.toHexString();
