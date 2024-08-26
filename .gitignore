@@ -24,7 +24,7 @@ pids
 lib-cov
 
 # Environment Variable File
-.env
+#.env
 
 # Coverage directory used by tools like istanbul
 coverage

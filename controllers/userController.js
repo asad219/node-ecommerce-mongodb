@@ -2,6 +2,8 @@ import { User } from "../models/userModel.js";
 import asyncHandler from "express-async-handler";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import { getDataUri } from "../utils/features.js";
+import cloudinary from 'cloudinary';
 
 //Get All Users for Admin
 export const getAllController = asyncHandler(async (req, res) => {
@@ -117,6 +119,7 @@ export const loginController = asyncHandler(async (req, res) => {
         expires: new Date(Date.now() + 15 * 24 * 60 * 60 * 1000),
         secure: process.env.NODE_ENV === "development" ? true : false,
         httpOnly: process.env.NODE_ENV === "development" ? true : false,
+        sameSite: process.env.NODE_ENV === "development" ? true : false,
       })
       .json({
         success: true,
@@ -164,7 +167,7 @@ export const getUserProfileController = asyncHandler(async (req, res) => {
   } catch (err) {}
 });
 
-export const updateProfile = asyncHandler(async (req, res) => {
+export const updateProfileController = asyncHandler(async (req, res) => {
   try {
     const { name, address, city, country, phone, answer } = req.body;
 
@@ -186,11 +189,12 @@ export const updateProfile = asyncHandler(async (req, res) => {
       if (answer) user.answer = answer;
       //update user
       await user.save();
-      const { password, token, __v, ...others} = user._doc;
-      res.status(200).json({success: true, message: "User Profile updated", others});
-    }
-    else{
-      res.status(404).json({success:false, message: "No user found"});
+      const { password, token, __v, ...others } = user._doc;
+      res
+        .status(200)
+        .json({ success: true, message: "User Profile updated", others });
+    } else {
+      res.status(404).json({ success: false, message: "No user found" });
     }
   } catch (error) {
     console.log(error);
@@ -198,5 +202,73 @@ export const updateProfile = asyncHandler(async (req, res) => {
       .status(500)
       .json({ success: false, message: "Error in Update profile API" });
   }
+});
 
+export const updatePasswordController = asyncHandler(async (req, res) => {
+  try {
+    const { id, oldpassword, newpassword } = req.body;
+
+    if (id != req.user.userId) {
+      return res
+        .status(500)
+        .send({ success: false, message: "Wrong token or user info" });
+    }
+    const user = await User.findById(id);
+    if (!oldpassword || !newpassword) {
+      return res
+        .status(500)
+        .send({
+          success: false,
+          message: "Please provide old and new password",
+        });
+    }
+    if (user && (await bcrypt.compareSync(oldpassword, user.password))) {
+      user.password = newpassword;
+      await user.save();
+      res
+        .status(200)
+        .send({ succss: true, message: "Password updated successfully" });
+    } else {
+      res.status(401).json({ message: "Invalid old password" });
+    }
+    res.status(200).json({ message: "Password successfully updated." });
+  } catch (error) {
+    console.log(error);
+    res
+      .status(500)
+      .json({ success: false, message: "Error in Update Password API" });
+  }
+});
+
+export const uploadPrifilePicController = asyncHandler(async (req, res) => {
+  try {
+    const user = await User.findById(req.user.userId);
+    if(user){
+      //get profile picture from client
+      const file = getDataUri(req.file);
+      //delete previous profile picture 
+      try {
+        await cloudinary.v2.uploader.destroy(user.profilePic.public_id);  
+      } catch (error) {
+        
+      }
+      
+      //update new profile picture
+      const cdb = await cloudinary.v2.uploader.upload(file.content); //cdb mean cloudinary databse
+
+      user.profilePic = {
+        public_id: cdb.public_id,
+        url: cdb.secure_url
+      }
+      //save function
+      await user.save();
+      res.status(200).send({succes: true, message: "Profile pic uploaded"});
+    }
+    
+  } catch (error) {
+    console.log(error);
+    res
+      .status(500)
+      .json({ success: false, message: "Error in Update Profile Pic API" });
+  }
 });
