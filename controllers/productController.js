@@ -47,7 +47,7 @@ export const getSingleProductController = asyncHandler(async (req, res) => {
 //create new product
 export const createProductController = asyncHandler(async (req, res) => {
   try {
-    const { name, description, price, category, stock } = req.body;
+    const { name, description, price, category, stock, size, color } = req.body;
     //validation
     // if (!name || !description || !price || !category || !stock){
     //     return res.status(500).json({success:false, message:"Please enter mendatory field"});
@@ -78,6 +78,8 @@ export const createProductController = asyncHandler(async (req, res) => {
       category,
       stock,
       images: [image],
+      size,
+      color
     });
     return res.status(201).send({
       success: true,

@@ -28,6 +28,12 @@ const productSchema = new mongoose.Schema(
         url: String,
       },
     ],
+    color: {
+      type: Array
+    },
+    size: {
+      type: Array
+    }
   },
   { timestamps: true }
 );
