@@ -29,6 +29,7 @@ import userRoutes from "./routes/userRoutes.js";
 import developer from "./routes/developerRoutes.js";
 import productRoutes from './routes/productRoutes.js';
 import categoryRoutes from './routes/categoryRoutes.js';
+import orderRoutes from './routes/orderRoutes.js';
 
 import { dbConnect } from "./config/dbConnection.js";
 
@@ -52,4 +53,5 @@ app.listen(port, () => {
 app.use("/api/user", userRoutes);
 app.use("/api/product", productRoutes);
 app.use("/api/category", categoryRoutes);
+app.use("/api/order", orderRoutes);
 app.use("/api/developer", developer);

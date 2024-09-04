@@ -1,7 +1,7 @@
 import express from "express";
 const router = express.Router();
 
-import { validateToken } from "../middlewares/validateTokenHandler.js";
+import { validateToken, verifyTokenAndAdmin } from "../middlewares/validateTokenHandler.js";
 import {
   getAllPrductsController,
   createProductController,
@@ -18,6 +18,7 @@ router.get("/:id", getSingleProductController);
 router.post(
   "/create-product",
   validateToken,
+  verifyTokenAndAdmin,
   singleUpload,
   createProductController
 );

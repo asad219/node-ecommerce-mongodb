@@ -48,16 +48,6 @@ export const getSingleProductController = asyncHandler(async (req, res) => {
 export const createProductController = asyncHandler(async (req, res) => {
   try {
     const { name, description, price, category, stock, size, color } = req.body;
-    //validation
-    // if (!name || !description || !price || !category || !stock){
-    //     return res.status(500).json({success:false, message:"Please enter mendatory field"});
-    // }
-    if (req.user.role != "admin") {
-      return res
-        .status(500)
-        .json({ success: false, message: "Your are not authorized " });
-    }
-
     //upload image
     if (!req.file) {
       return res

@@ -36,5 +36,25 @@ export const validateToken = asyncHandler(async(req, res, next)=>{
         res.status(500).json({error: "Error found in token"});
     }
     
-})
+});
+
+export const verifyTokenAndAuthorization = (req, res, next) => {
+    validateToken(req, res, () => {
+      if ((req.user.id = req.params.id ||  req.user.role === "admin")) { //req.user.isAdmin)) {
+        next();
+      } else {
+        res.status(403).json("You are not authorized");
+      }
+    });
+  };
+  
+  export const verifyTokenAndAdmin = (req, res, next) => {
+    validateToken(req, res, () => {
+        if (req.user.role === "admin") { //if (req.user.isAdmin) {
+        next();
+      } else {
+        res.status(403).json("You are not Admin");
+      }
+    });
+  };
 
