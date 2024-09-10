@@ -51,6 +51,7 @@ app.listen(port, () => {
 
 //All Routes
 app.use("/api/user", userRoutes);
+app.use("/", productRoutes);
 app.use("/api/product", productRoutes);
 app.use("/api/category", categoryRoutes);
 app.use("/api/order", orderRoutes);
