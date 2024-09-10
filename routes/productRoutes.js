@@ -13,6 +13,15 @@ import {
 } from "../controllers/productController.js";
 import { singleUpload } from "../middlewares/multer.js";
 
+
+router.get("", async (req, res) => {
+  try {
+    res.status(200).json({success: true, message:"up and running");
+  } catch (error) {
+    res.status(500).json(error);
+  }
+});
+
 router.get("/get-all", getAllPrductsController);
 router.get("/:id", getSingleProductController);
 router.post(
