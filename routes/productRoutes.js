@@ -14,7 +14,7 @@ import {
 import { singleUpload } from "../middlewares/multer.js";
 
 
-router.get("", async (req, res) => {
+router.get("/", async (req, res) => {
   try {
     res.status(200).json({success: true, message:"up and running");
   } catch (error) {
